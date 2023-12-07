@@ -21,15 +21,12 @@ const SignupPage = () => {
 
   const handleSignup = async (values, { setSubmitting, setFieldError }) => {
     try {
-      // Your existing logic here
-
       const response = await axios.post('http://192.168.1.15:3000/api/register', {
         name: values.name,
         email: values.email,
         password: values.password,
         c_password: values.confirmPassword,
       });
-
       console.log(response.data);
       Navigation.navigate('SignupConfirmation');
     } catch (error) {
@@ -169,7 +166,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
   },
   signupTextInput: {
-    marginTop: 30,
+    marginTop: 5,
     fontSize: 20,
     width: 340,
     padding: 5,
@@ -195,6 +192,7 @@ const styles = StyleSheet.create({
   errorText: {
     color: 'red',
     marginTop: 10,
+    textAlign: 'center',
   },
 });
 
