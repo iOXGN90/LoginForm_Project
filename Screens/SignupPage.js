@@ -21,7 +21,7 @@ const SignupPage = () => {
 
   const handleSignup = async (values, { setSubmitting, setFieldError, resetForm }) => {
     try {
-      const response = await axios.post('http://192.168.1.15:3000/api/register', {
+      const response = await axios.post('http://192.168.1.15:3000/api/registers', {
         name: values.name,
         email: values.email,
         password: values.password,
@@ -167,21 +167,22 @@ const styles = StyleSheet.create({
   },
   createAccountText: {
     fontSize: 40,
+    marginBottom: 20,
   },
   signupTextInput: {
     marginTop: 5,
     fontSize: 20,
     width: 340,
     padding: 5,
+    marginVertical: 25,
     backgroundColor: '#ffffff',
     flexDirection: 'column',
     justifyContent: 'center',
-
   },
   signupButton: {
     width: 340,
     padding: 15,
-    marginTop: 40,
+    marginTop: 20,
     backgroundColor: '#55bCF6',
     borderRadius: 25,
     elevation: 10,

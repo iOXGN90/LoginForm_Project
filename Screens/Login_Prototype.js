@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -12,45 +12,43 @@ const LoginSchema = Yup.object().shape({
     password: Yup.string().required('Password is required'),
 });
 
-    const Login = () => {
-        const navigation = useNavigation();
+const Login = () => {
+    const navigation = useNavigation();
 
     const handleLogin = async (values, { setSubmitting, setFieldError }) => {
-        try {
-        // Simulating API call to login
-            const response = await axios.post('http://192.168.1.15:3000/api/login', {
-                email: values.email,
-                password: values.password,
-            });
+    try {
+      // Simulating API call to login
+        const response = await axios.post('http://192.168.1.15:3000/api/login', {
+            email: values.email,
+            password: values.password,
+        });
 
-            console.log(response.data);
+        console.log(response.data);
 
-            // Simulating successful login, navigate to Home
-                navigation.navigate('Home');
-        } catch (error) {
-            if (error.response && error.response.status === 401) {
-                // Simulating authentication failure
-                setFieldError('password', 'Invalid email or password');
-                Alert.alert('Authentication Error', 'Invalid email or password');
-            } else {
-                // Handle other errors as needed
-                Alert.alert('Error', 'An unexpected error occurred');
-            }
-        } finally {
-            setSubmitting(false);
+      // Simulating successful login, navigate to Home
+        navigation.navigate('Home');
+    } catch (error) {
+        if (error.response && error.response.status === 401) {
+        // Simulating authentication failure
+        setFieldError('password', 'Invalid email or password');
+        Alert.alert('Authentication Error', 'Invalid email or password');
+        } else {
+        // Handle other errors as needed
+        // Alert.alert('Error', 'An unexpected error occurred');
         }
-        };
+    } finally {
+        setSubmitting(false);
+    }
+    };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.loginText}>
-                Welcome back!
-            </Text>
-            <Formik
-                initialValues={{ email: '', password: '' }}
-                validationSchema={LoginSchema}
-                onSubmit={handleLogin}
-            >
+    <SafeAreaView style={styles.container}>
+        <Text style={styles.loginText}>Welcome back!</Text>
+        <Formik
+            initialValues={{ email: '', password: '' }}
+            validationSchema={LoginSchema}
+            onSubmit={handleLogin}
+        >
             {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
                 <View style={styles.Body}>
                     <TextInput
@@ -73,27 +71,22 @@ const LoginSchema = Yup.object().shape({
                         onBlur={handleBlur('password')}
                         error={touched.password && errors.password}
                     />
+                    <View style={styles.forgotpassWrapper}>
+                        <TouchableOpacity style={styles.forgotpassButton} onPress={() => navigation.navigate('ForgotPassword')}>
+                            <Text style={styles.forgotpassText}>
+                                Forgot Password
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
 
-                    <TouchableOpacity style={styles.forgotpassButton} onPress={() => navigation.navigate('ForgotPassword')}>
-                        <Text style={styles.forgotpassText}>
-                            Forgot Password
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={styles.loginButton}
-                        mode="contained"
-                        onPress={handleSubmit}
-                        disabled={isSubmitting}
-                    >
+                    <TouchableOpacity style={styles.loginButton} mode="contained" onPress={handleSubmit} disabled={isSubmitting}>
                         <Text style={styles.loginButtonText}>
                             Login
                         </Text>
                     </TouchableOpacity>
-
                     <View style={styles.signupWrapper}>
                         <Text style={styles.signupInfo}>
-                            Don't have an account?
+                            Don't have an account?  
                         </Text>
                         <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
                             <Text style={styles.signupText}>
@@ -103,8 +96,8 @@ const LoginSchema = Yup.object().shape({
                     </View>
                 </View>
             )}
-            </Formik>
-        </SafeAreaView>
+        </Formik>
+    </SafeAreaView>
     );
 };
 
@@ -116,11 +109,10 @@ const styles = StyleSheet.create({
         width: 'auto',
         backgroundColor: '#ffffff',
     },
-    Body:{
+    Body: {
         width: '100%',
         alignItems: 'center',
         justifyContent: 'relative',
-
     },
     loginText: {
         fontSize: 40,
@@ -133,16 +125,18 @@ const styles = StyleSheet.create({
         width: '80%',
         marginVertical: 25,
         backgroundColor: '#ffffff',
-        fontSize: 20,
+        fontSize: 25,
+    },
+    forgotpassWrapper:{
+        width: '80%',
+        alignItems: 'flex-end',
     },
     forgotpassButton: {
-        flexDirection: 'row-reverse',
-        width: '80%',
         marginTop: 10,
     },
-    forgotpassText:{
-        textDecorationLine: 'underline',
-        fontSize: 15,
+    forgotpassText: {
+        // textDecorationLine: 'underline',
+        fontSize: 17,
         color: '#55bCF6',
         fontWeight: 'bold',
     },
@@ -154,7 +148,7 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         elevation: 10,
     },
-    loginButtonText:{
+    loginButtonText: {
         textAlign: 'center',
         color: 'white',
         fontWeight: 'bold',
