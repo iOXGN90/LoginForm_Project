@@ -19,7 +19,7 @@ const SignupSchema = Yup.object().shape({
 const SignupPage = () => {
   const Navigation = useNavigation();
 
-  const handleSignup = async (values, { setSubmitting, setFieldError }) => {
+  const handleSignup = async (values, { setSubmitting, setFieldError, resetForm }) => {
     try {
       const response = await axios.post('http://192.168.1.15:3000/api/register', {
         name: values.name,
@@ -27,8 +27,12 @@ const SignupPage = () => {
         password: values.password,
         c_password: values.confirmPassword,
       });
+
       console.log(response.data);
       Navigation.navigate('SignupConfirmation');
+
+      // Reset the form to clear the text inputs
+      resetForm();
     } catch (error) {
       if (error.response && (error.response.status === 404 || error.response.status === 409)) {
         // HTTP status 404 corresponds to Not Found (Email already taken)
@@ -44,7 +48,7 @@ const SignupPage = () => {
   };
 
   const goBack = () => {
-    Navigation.pop();
+    Navigation.navigate('Login');
   };
 
   return (
@@ -57,7 +61,7 @@ const SignupPage = () => {
       <View style={styles.Body}>
         <Text style={styles.createAccountText}>Create Account</Text>
         <Formik
-        style={styles.Container}
+          style={styles.Container}
           initialValues={{
             name: '',
             email: '',
@@ -75,11 +79,12 @@ const SignupPage = () => {
             handleBlur,
             handleSubmit,
             isSubmitting,
+            resetForm, // Added resetForm from Formik
           }) => (
             <View>
               <TextInput
                 style={styles.signupTextInput}
-                placeholder="Name"
+                label={"Name"}
                 autoCapitalize="sentences"
                 value={values.name}
                 onChangeText={handleChange('name')}
@@ -89,7 +94,7 @@ const SignupPage = () => {
 
               <TextInput
                 style={styles.signupTextInput}
-                placeholder="Email"
+                label={"Email"}
                 autoCapitalize="none"
                 value={values.email}
                 onChangeText={handleChange('email')}
@@ -99,7 +104,7 @@ const SignupPage = () => {
 
               <TextInput
                 style={styles.signupTextInput}
-                placeholder="Password"
+                label={"Password"}
                 autoCapitalize="none"
                 secureTextEntry
                 value={values.password}
@@ -113,7 +118,7 @@ const SignupPage = () => {
 
               <TextInput
                 style={styles.signupTextInput}
-                placeholder="Confirm Password"
+                label={"Confirm Password"}
                 autoCapitalize="none"
                 secureTextEntry
                 value={values.confirmPassword}
@@ -132,7 +137,9 @@ const SignupPage = () => {
                   onPress={handleSubmit}
                   disabled={isSubmitting}
                 >
-                  <Text style={styles.signupText}>Sign up</Text>
+                  <Text style={styles.signupText}>
+                    Sign up
+                  </Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -157,10 +164,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     height: '90%',
-  },
-  Container: {
-    backgroundColor: 'white',
-    flex: 1,
   },
   createAccountText: {
     fontSize: 40,
