@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
+import { TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Formik } from 'formik';
@@ -14,37 +14,6 @@ const LoginSchema = Yup.object().shape({
 
 const Login = () => {
   const navigation = useNavigation();
-  const [errorMessage, setErrorMessage] = React.useState(null);
-
-  const handleLogin = async (values, { setSubmitting, setFieldError }) => {
-    try {
-      // Simulating API call to login
-      const response = await axios.post('http://192.168.1.15:3000/api/login', {
-        email: values.email,
-        password: values.password,
-      });
-
-      console.log(response.data);
-
-      // Simulating successful login, navigate to Home
-      navigation.navigate('Home');
-    } catch (error) {
-      if (error.response && (error.response.status === 401 || error.response.status === 404)) {
-        // Simulating authentication failure
-        setErrorMessage('Invalid email or password');
-        setFieldError('email', 'Invalid email or password'); // Set error for email
-        setFieldError('password', 'Invalid email or password'); // Set error for password
-
-      } else {
-        // Handle other errors as needed
-        // setFieldError('password', 'An unexpected error occurred');
-        setFieldError('email', 'An unexpected error occurred');
-        console.log(error, 'AMang');
-      }
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -52,7 +21,45 @@ const Login = () => {
       <Formik
         initialValues={{ email: '', password: '' }}
         validationSchema={LoginSchema}
-        onSubmit={handleLogin}
+        onSubmit={async (values, { setSubmitting, setFieldError }) => {
+          try {
+            // Use Yup to validate the entire form
+            await LoginSchema.validate(values, { abortEarly: false });
+
+            // Simulating API call to login
+            const response = await axios.post('http://192.168.1.15:3000/api/login', {
+              email: values.email,
+              password: values.password,
+            });
+
+            console.log(response.data);
+
+            // Simulating successful login, navigate to Home
+            navigation.navigate('Home');
+          } catch (error) {
+            if (error instanceof Yup.ValidationError) {
+              // Yup validation error
+              error.inner.forEach((e) => {
+                // Set errors for each field
+                setFieldError(e.path, e.message);
+              });
+            } else if (!values.email || !values.password) {
+              // Handle empty fields
+              setFieldError('email', 'Please fill in the blank');
+              setFieldError('password', 'Please fill in the blank');
+            } else if (error.response && (error.response.status === 401 || error.response.status === 404)) {
+              // Simulating authentication failure
+              setFieldError('email', 'Invalid email or password');
+              setFieldError('password', 'Invalid email or password');
+            } else {
+              // Handle other errors as needed
+              setFieldError('email', 'An unexpected error occurred');
+              console.error(error);
+            }
+          } finally {
+            setSubmitting(false);
+          }
+        }}
       >
         {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
           <View style={styles.Body}>
@@ -76,11 +83,14 @@ const Login = () => {
               onBlur={handleBlur('password')}
               error={touched.password && errors.password}
             />
-            {errorMessage && (
-              <Text style={styles.errorText}>{errorMessage}</Text>
+            {errors.email && (
+              <Text style={styles.errorText}>{errors.email}</Text>
+            )}
+            {errors.password && (
+              <Text style={styles.errorText}>{errors.password}</Text>
             )}
             <View style={styles.forgotpassWrapper}>
-              <TouchableOpacity style={styles.forgotpassButton} onPress={() => navigation.navigate('ForgotPassword')}>
+              <TouchableOpacity style={styles.forgotpassButton}>
                 <Text style={styles.forgotpassText}>
                   Forgot Password
                 </Text>
@@ -107,7 +117,6 @@ const Login = () => {
     </SafeAreaView>
   );
 };
-
 
 const styles = StyleSheet.create({
     container: {
