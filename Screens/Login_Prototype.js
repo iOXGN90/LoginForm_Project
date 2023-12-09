@@ -49,12 +49,12 @@ const Login = () => {
               setFieldError('password', 'Please fill in the blank');
             } else if (error.response && (error.response.status === 401 || error.response.status === 404)) {
               // Simulating authentication failure
-              setFieldError('email', 'Invalid email or password');
+              // setFieldError('email', 'Invalid email or password');
               setFieldError('password', 'Invalid email or password');
             } else {
               // Handle other errors as needed
               setFieldError('email', 'An unexpected error occurred');
-              console.error(error);
+              console.error(error, 'AMang');
             }
           } finally {
             setSubmitting(false);
