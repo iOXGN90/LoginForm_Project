@@ -21,7 +21,7 @@ const SignupPage = () => {
 
   const handleSignup = async (values, { setSubmitting, setFieldError, resetForm }) => {
     try {
-      const response = await axios.post('http://192.168.1.15:3000/api/registers', {
+      const response = await axios.post('http://192.168.1.15:3000/api/register', {
         name: values.name,
         email: values.email,
         password: values.password,
