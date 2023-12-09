@@ -12,11 +12,18 @@ const Home = () => {
 
   return (
     <SafeAreaView style={styles.Body}>
-      <TouchableOpacity style={styles.logoutButton} onPress={goLogin}>
-        <Text style={styles.logoutText}>
-          Logout
+      <View style={styles.upper}>
+        <Text style={styles.welcomeText}>
+          Welcome User!
         </Text>
-      </TouchableOpacity>
+      </View>
+      <View style={styles.lower}>
+        <TouchableOpacity style={styles.logoutButton} onPress={goLogin}>
+          <Text style={styles.logoutText}>
+            Logout
+          </Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   )
 }
@@ -26,6 +33,18 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  upper:{
+    padding: 15,
+    margin: 20,
+  },
+  welcomeText:{
+    fontSize: 30,
+  },
+  lower:{
+    padding: 15,
+    margin: 20,
+
   },
   logoutButton:{
     borderRadius: 25,
