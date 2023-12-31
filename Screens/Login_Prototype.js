@@ -27,7 +27,7 @@ const Login = () => {
             await LoginSchema.validate(values, { abortEarly: false });
 
             // Simulating API call to login
-            const response = await axios.post('http://192.168.1.15:3000/api/login', {
+            const response = await axios.post('http://192.168.1.3:3000/api/login', {
               email: values.email,
               password: values.password,
             });
